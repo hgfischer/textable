@@ -3,31 +3,42 @@ package main
 import (
 	"log"
 	"os"
-	"regexp"
 	"strings"
 	"text/template"
 )
 
-const PREFIX = "c_"
+const PREFIX = "g_"
 
-func main() {
-	if len(os.Args) != 3 {
-		log.Fatal("go generator/main.go [type name] [another type]")
-	}
-
-	t := Type{os.Args[1], os.Args[2]}
-
-	ExecuteTemplate("generator/column_type.go.tpl", t, ".go")
-	ExecuteTemplate("generator/test.go.tpl", t, "_test.go")
+var TYPES = []string{
+	"bool", "uintptr", "complex128", "complex64", "float32", "float64",
+	"int", "int8", "int16", "int32", "int64",
+	"uint", "uint8", "uint16", "uint32", "uint64",
+	"string", // the last one is also the default type of the constructor
+	// byte is the same as uint8
+	// rune is the same as int32
 }
 
-func ExecuteTemplate(templateFile string, t Type, outFnameSuffix string) {
+func main() {
+	allTypes := &AllTypes{}
+	lastType := TYPES[len(TYPES)-1]
+	for _, st := range TYPES {
+		t := Type{st, lastType}
+		allTypes.Types = append(allTypes.Types, &t)
+		lastType = st
+		ExecuteTemplate("generator/column_type.go.tpl", t, ".go")
+		ExecuteTemplate("generator/test.go.tpl", t, "_test.go")
+		allTypes.DefaultType = t
+	}
+	ExecuteTemplate("generator/constructor.go.tpl", allTypes, ".go")
+}
+
+func ExecuteTemplate(templateFile string, t HasFilename, suffix string) {
 	tpl, err := template.ParseFiles(templateFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	file, err := os.Create(t.Filename(outFnameSuffix))
+	file, err := os.Create(t.Filename(suffix))
 	if err != nil {
 		log.Fatal(file, err)
 	}
@@ -39,21 +50,28 @@ func ExecuteTemplate(templateFile string, t Type, outFnameSuffix string) {
 	}
 }
 
+type HasFilename interface {
+	Filename(suffix string) string
+}
+
 type Type struct {
 	Type        string
 	AnotherType string
 }
 
 func (t Type) CapsName() string {
-	rxp := regexp.MustCompile(`^.+\.(.+)$`)
-	return strings.Title(rxp.ReplaceAllString(t.Type, "$1")) + "Col"
-}
-
-func (t Type) Basename() string {
-	rxp := regexp.MustCompile(`\W`)
-	return PREFIX + rxp.ReplaceAllString(strings.ToLower(t.Type), "_")
+	return strings.Title(t.Type) + "Col"
 }
 
 func (t Type) Filename(suffix string) string {
-	return t.Basename() + suffix
+	return "gen_" + t.Type + "_col" + suffix
+}
+
+type AllTypes struct {
+	Types       []*Type
+	DefaultType Type
+}
+
+func (t AllTypes) Filename(suffix string) string {
+	return "gen_constructor" + suffix
 }

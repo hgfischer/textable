@@ -9,7 +9,7 @@ func TestUintptrColAppend(t *testing.T) {
 	if err := c.Append(*new(uintptr)); err != nil {
 		t.Fatal(err)
 	}
-	if err := c.Append(*new(string)); err == nil {
+	if err := c.Append(*new(bool)); err == nil {
 		t.Fatal("Was expecting an error")
 	}
 }
