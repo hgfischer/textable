@@ -1,20 +1,25 @@
 # http://wiki.osdev.org/Makefile
 .PHONY: all clean default
 
-TEMPLATE := generator/template.go.tpl
-
 TYPES := \
-	bool byte rune string error uintptr \
+	bool byte rune string uintptr \
 	complex128 complex64 float32 float64 \
 	int int8 int16 int32 int64 \
-	uint uint8 uint16 uint32 uint64 \
-	fmt.Stringer
+	uint uint8 uint16 uint32 uint64
+
+LAST_TYPE := uint64
 
 default: all
 
-all: $(TEMPLATE)
-	for type in $(TYPES); do go run generator/main.go $$type; done;
+all: clean
+	last_type=$(LAST_TYPE); \
+	for type in $(TYPES); do \
+		echo go run generator/main.go $$type $$last_type; \
+		go run generator/main.go $$type $$last_type; \
+		last_type=$$type; \
+	done;
 	goimports -w c_*.go
+	go test -v
 	go install
 
 clean: 

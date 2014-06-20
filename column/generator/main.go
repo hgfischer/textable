@@ -8,19 +8,26 @@ import (
 	"text/template"
 )
 
+const PREFIX = "c_"
+
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("go generator/main.go [type name]")
+	if len(os.Args) != 3 {
+		log.Fatal("go generator/main.go [type name] [another type]")
 	}
 
-	t := Type{os.Args[1]}
+	t := Type{os.Args[1], os.Args[2]}
 
-	tpl, err := template.ParseFiles("generator/template.go.tpl")
+	ExecuteTemplate("generator/column_type.go.tpl", t, ".go")
+	ExecuteTemplate("generator/test.go.tpl", t, "_test.go")
+}
+
+func ExecuteTemplate(templateFile string, t Type, outFnameSuffix string) {
+	tpl, err := template.ParseFiles(templateFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	file, err := os.Create(t.Filename())
+	file, err := os.Create(t.Filename(outFnameSuffix))
 	if err != nil {
 		log.Fatal(file, err)
 	}
@@ -33,15 +40,20 @@ func main() {
 }
 
 type Type struct {
-	Type string
+	Type        string
+	AnotherType string
 }
 
 func (t Type) CapsName() string {
 	rxp := regexp.MustCompile(`^.+\.(.+)$`)
-	return strings.Title(rxp.ReplaceAllString(t.Type, "$1"))
+	return strings.Title(rxp.ReplaceAllString(t.Type, "$1")) + "Col"
 }
 
-func (t Type) Filename() string {
+func (t Type) Basename() string {
 	rxp := regexp.MustCompile(`\W`)
-	return "c_" + rxp.ReplaceAllString(strings.ToLower(t.Type), "_") + ".go"
+	return PREFIX + rxp.ReplaceAllString(strings.ToLower(t.Type), "_")
+}
+
+func (t Type) Filename(suffix string) string {
+	return t.Basename() + suffix
 }
