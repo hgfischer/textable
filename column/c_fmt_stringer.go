@@ -1,5 +1,7 @@
 package column
 
+import "fmt"
+
 type StringerCol struct {
 	rows []fmt.Stringer
 }
