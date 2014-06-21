@@ -2,7 +2,10 @@
 // This file was generated. See generator directory.
 package column
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestComplex128ColAppend(t *testing.T) {
 	c := new(Complex128Col)
@@ -40,5 +43,17 @@ func TestComplex128ColAt(t *testing.T) {
 	}
 	if value, exists = c.At(1); exists {
 		t.Fatal("Value at index 1 should not exist")
+	}
+}
+
+func TestComplex128ColString(t *testing.T) {
+	c := new(Complex128Col)
+	val := *new(complex128)
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]complex128{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }

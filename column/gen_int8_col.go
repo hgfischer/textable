@@ -32,3 +32,7 @@ func (c *Int8Col) At(index uint) (value interface{}, exists bool) {
 	}
 	return c.rows[index], true
 }
+
+func (c *Int8Col) String() string {
+	return fmt.Sprintf("%#v", c.rows)
+}

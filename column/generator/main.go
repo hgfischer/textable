@@ -12,10 +12,10 @@ const PREFIX = "g_"
 var TYPES = []string{
 	"bool", "uintptr", "complex128", "complex64", "float32", "float64",
 	"int", "int8", "int16", "int32", "int64",
-	"uint", "uint8", "uint16", "uint32", "uint64",
+	"uint", "byte", "uint16", "uint32", "uint64",
 	"string", // the last one is also the default type of the constructor
-	// byte is the same as uint8
-	// rune is the same as int32
+	// byte is an alias to uint8
+	// rune is an alias to int32
 }
 
 func main() {

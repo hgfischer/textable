@@ -32,3 +32,7 @@ func (c *{{.CapsName}}) At(index uint) (value interface{}, exists bool) {
 	}
 	return c.rows[index], true
 }
+
+func (c *{{.CapsName}}) String() string {
+	return fmt.Sprintf("%#v", c.rows)
+}

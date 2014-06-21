@@ -42,3 +42,15 @@ func Test{{.CapsName}}At(t *testing.T) {
 		t.Fatal("Value at index 1 should not exist")
 	}
 }
+
+func Test{{.CapsName}}String(t *testing.T) {
+	c := new({{.CapsName}})
+	val := *new({{.Type}})
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]{{.Type}}{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
+	}
+}

@@ -39,8 +39,8 @@ func NewForTypeOf(value interface{}) Column {
 	case uint:
 		return new(UintCol)
 
-	case uint8:
-		return new(Uint8Col)
+	case byte:
+		return new(ByteCol)
 
 	case uint16:
 		return new(Uint16Col)

@@ -2,7 +2,10 @@
 // This file was generated. See generator directory.
 package column
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestInt64ColAppend(t *testing.T) {
 	c := new(Int64Col)
@@ -40,5 +43,17 @@ func TestInt64ColAt(t *testing.T) {
 	}
 	if value, exists = c.At(1); exists {
 		t.Fatal("Value at index 1 should not exist")
+	}
+}
+
+func TestInt64ColString(t *testing.T) {
+	c := new(Int64Col)
+	val := *new(int64)
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]int64{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }

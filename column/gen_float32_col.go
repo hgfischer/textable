@@ -32,3 +32,7 @@ func (c *Float32Col) At(index uint) (value interface{}, exists bool) {
 	}
 	return c.rows[index], true
 }
+
+func (c *Float32Col) String() string {
+	return fmt.Sprintf("%#v", c.rows)
+}

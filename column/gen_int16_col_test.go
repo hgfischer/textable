@@ -2,7 +2,10 @@
 // This file was generated. See generator directory.
 package column
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestInt16ColAppend(t *testing.T) {
 	c := new(Int16Col)
@@ -40,5 +43,17 @@ func TestInt16ColAt(t *testing.T) {
 	}
 	if value, exists = c.At(1); exists {
 		t.Fatal("Value at index 1 should not exist")
+	}
+}
+
+func TestInt16ColString(t *testing.T) {
+	c := new(Int16Col)
+	val := *new(int16)
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]int16{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }

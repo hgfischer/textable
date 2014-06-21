@@ -32,3 +32,7 @@ func (c *UintptrCol) At(index uint) (value interface{}, exists bool) {
 	}
 	return c.rows[index], true
 }
+
+func (c *UintptrCol) String() string {
+	return fmt.Sprintf("%#v", c.rows)
+}

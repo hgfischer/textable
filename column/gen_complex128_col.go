@@ -32,3 +32,7 @@ func (c *Complex128Col) At(index uint) (value interface{}, exists bool) {
 	}
 	return c.rows[index], true
 }
+
+func (c *Complex128Col) String() string {
+	return fmt.Sprintf("%#v", c.rows)
+}

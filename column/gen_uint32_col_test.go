@@ -2,7 +2,10 @@
 // This file was generated. See generator directory.
 package column
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestUint32ColAppend(t *testing.T) {
 	c := new(Uint32Col)
@@ -40,5 +43,17 @@ func TestUint32ColAt(t *testing.T) {
 	}
 	if value, exists = c.At(1); exists {
 		t.Fatal("Value at index 1 should not exist")
+	}
+}
+
+func TestUint32ColString(t *testing.T) {
+	c := new(Uint32Col)
+	val := *new(uint32)
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]uint32{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }

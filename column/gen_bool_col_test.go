@@ -2,7 +2,10 @@
 // This file was generated. See generator directory.
 package column
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestBoolColAppend(t *testing.T) {
 	c := new(BoolCol)
@@ -40,5 +43,17 @@ func TestBoolColAt(t *testing.T) {
 	}
 	if value, exists = c.At(1); exists {
 		t.Fatal("Value at index 1 should not exist")
+	}
+}
+
+func TestBoolColString(t *testing.T) {
+	c := new(BoolCol)
+	val := *new(bool)
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]bool{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }

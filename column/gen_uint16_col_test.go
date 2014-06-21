@@ -2,14 +2,17 @@
 // This file was generated. See generator directory.
 package column
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestUint16ColAppend(t *testing.T) {
 	c := new(Uint16Col)
 	if err := c.Append(*new(uint16)); err != nil {
 		t.Fatal(err)
 	}
-	if err := c.Append(*new(uint8)); err == nil {
+	if err := c.Append(*new(byte)); err == nil {
 		t.Fatal("Was expecting an error")
 	}
 }
@@ -40,5 +43,17 @@ func TestUint16ColAt(t *testing.T) {
 	}
 	if value, exists = c.At(1); exists {
 		t.Fatal("Value at index 1 should not exist")
+	}
+}
+
+func TestUint16ColString(t *testing.T) {
+	c := new(Uint16Col)
+	val := *new(uint16)
+	c.Append(val)
+	c.Append(val)
+	expected := fmt.Sprintf("[]uint16{%#v, %#v}", val, val)
+	value := c.String()
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }
