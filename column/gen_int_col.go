@@ -11,8 +11,8 @@ type IntCol struct {
 	rows []int
 }
 
-func (c *IntCol) Len() int {
-	return len(c.rows)
+func (c *IntCol) Len() uint {
+	return uint(len(c.rows))
 }
 
 func (c *IntCol) Append(row interface{}) error {
@@ -24,4 +24,11 @@ func (c *IntCol) Append(row interface{}) error {
 	}
 	c.rows = append(c.rows, value)
 	return nil
+}
+
+func (c *IntCol) At(index uint) (value interface{}, exists bool) {
+	if index > uint(len(c.rows)-1) {
+		return nil, false
+	}
+	return c.rows[index], true
 }

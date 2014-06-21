@@ -11,8 +11,8 @@ type Uint8Col struct {
 	rows []uint8
 }
 
-func (c *Uint8Col) Len() int {
-	return len(c.rows)
+func (c *Uint8Col) Len() uint {
+	return uint(len(c.rows))
 }
 
 func (c *Uint8Col) Append(row interface{}) error {
@@ -24,4 +24,11 @@ func (c *Uint8Col) Append(row interface{}) error {
 	}
 	c.rows = append(c.rows, value)
 	return nil
+}
+
+func (c *Uint8Col) At(index uint) (value interface{}, exists bool) {
+	if index > uint(len(c.rows)-1) {
+		return nil, false
+	}
+	return c.rows[index], true
 }

@@ -11,8 +11,8 @@ type {{.CapsName}} struct {
 	rows []{{.Type}}
 }
 
-func (c *{{.CapsName}}) Len() int {
-	return len(c.rows)
+func (c *{{.CapsName}}) Len() uint {
+	return uint(len(c.rows))
 }
 
 func (c *{{.CapsName}}) Append(row interface{}) error {
@@ -24,4 +24,11 @@ func (c *{{.CapsName}}) Append(row interface{}) error {
 	}
 	c.rows = append(c.rows, value)
 	return nil
+}
+
+func (c *{{.CapsName}}) At(index uint) (value interface{}, exists bool) {
+	if index > uint(len(c.rows)-1) {
+		return nil, false
+	}
+	return c.rows[index], true
 }

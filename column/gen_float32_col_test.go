@@ -26,3 +26,19 @@ func TestFloat32ColLen(t *testing.T) {
 		t.Fatalf("Wrong length. (actual) %d != %d (expected)", c.Len(), 3)
 	}
 }
+
+func TestFloat32ColAt(t *testing.T) {
+	c := new(Float32Col)
+	expected := *new(float32)
+	c.Append(expected)
+	value, exists := c.At(0)
+	if !exists {
+		t.Fatal("Value at index 0 should exist")
+	}
+	if value != expected {
+		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
+	}
+	if value, exists = c.At(1); exists {
+		t.Fatal("Value at index 1 should not exist")
+	}
+}

@@ -11,8 +11,8 @@ type Float32Col struct {
 	rows []float32
 }
 
-func (c *Float32Col) Len() int {
-	return len(c.rows)
+func (c *Float32Col) Len() uint {
+	return uint(len(c.rows))
 }
 
 func (c *Float32Col) Append(row interface{}) error {
@@ -24,4 +24,11 @@ func (c *Float32Col) Append(row interface{}) error {
 	}
 	c.rows = append(c.rows, value)
 	return nil
+}
+
+func (c *Float32Col) At(index uint) (value interface{}, exists bool) {
+	if index > uint(len(c.rows)-1) {
+		return nil, false
+	}
+	return c.rows[index], true
 }
