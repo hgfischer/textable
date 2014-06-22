@@ -18,4 +18,5 @@ func TestTableSetup(t *testing.T) {
 	for _, c := range tt.Columns {
 		t.Log(c.String())
 	}
+	// TODO add some assertions here, or refactor this test
 }
