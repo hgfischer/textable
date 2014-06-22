@@ -1,27 +1,39 @@
 package textable
 
+import "github.com/hgfischer/textable/column"
+
 type TexTable struct {
-	Header []string
-	Align  []Align
-	Data   [][]interface{}
+	Header  []string
+	Align   []Align
+	Columns []column.Column
 }
 
 func New(header ...string) *TexTable {
 	return &TexTable{
-		Header: header,
-		Align:  make([]Align, len(header)),
+		Header:  header,
+		Align:   make([]Align, len(header)),
+		Columns: make([]column.Column, len(header)),
 	}
 }
 
-func (t *TexTable) AddRow(columns ...interface{}) error {
+func (tt *TexTable) AddRow(columns ...interface{}) error {
+	if len(columns) != len(tt.Header) {
+		return getError(_ERR_INCOR_NUM_VALS, len(columns), len(tt.Header))
+	}
+
 	for k, v := range columns {
-		println(k, v)
+		if tt.Columns[k] == nil {
+			tt.Columns[k] = column.NewForTypeOf(v)
+		}
+		if err := tt.Columns[k].Append(v); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (t *TexTable) String() string {
+func (tt *TexTable) String() string {
 	return `+-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
