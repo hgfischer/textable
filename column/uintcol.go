@@ -52,10 +52,10 @@ func (c *UIntCol) Append(row interface{}) error {
 }
 
 func (c *UIntCol) At(index uint) (value interface{}, exists bool) {
-	if index > uint(len(c.rows)-1) {
-		return nil, false
+	if index < c.Len() {
+		return c.rows[index], true
 	}
-	return c.rows[index], true
+	return nil, false
 }
 
 func (c *UIntCol) String() string {

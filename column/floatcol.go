@@ -2,7 +2,7 @@ package column
 
 import (
 	"fmt"
-	"strconv"
+	"github.com/hgfischer/textable/strng"
 )
 
 type FloatCol struct {
@@ -40,7 +40,7 @@ func (c *FloatCol) Append(row interface{}) error {
 	case uint64:
 		c.rows = append(c.rows, float64(value))
 	default:
-		num, err := strconv.ParseFloat(fmt.Sprint(value), 64)
+		num, err := strng.ExtractFloat(fmt.Sprint(value))
 		if err != nil {
 			return err
 		}
@@ -50,10 +50,10 @@ func (c *FloatCol) Append(row interface{}) error {
 }
 
 func (c *FloatCol) At(index uint) (value interface{}, exists bool) {
-	if index > uint(len(c.rows)-1) {
-		return nil, false
+	if index < c.Len() {
+		return c.rows[index], true
 	}
-	return c.rows[index], true
+	return nil, false
 }
 
 func (c *FloatCol) String() string {

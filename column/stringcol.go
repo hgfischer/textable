@@ -1,6 +1,9 @@
 package column
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type StringCol struct {
 	rows []string
@@ -11,15 +14,19 @@ func (c *StringCol) Len() uint {
 }
 
 func (c *StringCol) Append(row interface{}) error {
-	c.rows = append(c.rows, fmt.Sprint(row))
+	str := ""
+	if row != nil {
+		str = strings.TrimSpace(fmt.Sprint(row))
+	}
+	c.rows = append(c.rows, str)
 	return nil
 }
 
 func (c *StringCol) At(index uint) (value interface{}, exists bool) {
-	if index > uint(len(c.rows)-1) {
-		return nil, false
+	if index < c.Len() {
+		return c.rows[index], true
 	}
-	return c.rows[index], true
+	return nil, false
 }
 
 func (c *StringCol) String() string {
@@ -28,7 +35,7 @@ func (c *StringCol) String() string {
 
 func (c *StringCol) Last() (value interface{}) {
 	if pos := c.Len(); pos != 0 {
-		value, _ = c.At(pos)
+		value, _ = c.At(pos - 1)
 	}
 	return
 }

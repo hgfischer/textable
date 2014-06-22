@@ -3,49 +3,39 @@ package column
 import (
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestStringColAppend(t *testing.T) {
-	c := new(StringCol)
-	c.Append(string("random string"))
-	c.Append(float64(7.8))
-	c.Append(int(-622))
-	c.Append(uint(0xbeec38))
-
+var goodStringConversions = map[interface{}]string{
+	string(" trailing spaces "): "trailing spaces",
+	string("random string"):     "random string",
+	float64(7.8):                "7.8",
+	int(-622):                   "-622",
+	uint(0xbeec38):              "12512312",
+	nil:                         "",
 }
 
-func TestStringColLen(t *testing.T) {
+func TestShouldAppendGoodConversionsToStringCol(t *testing.T) {
+	var err error
+	var at interface{}
+	var ok bool
+
 	c := new(StringCol)
-	if c.Len() != 0 {
-		t.Fatalf("Wrong length. (actual) %d != %d (expected)", c.Len(), 0)
-	}
-	c.Append(string("random string"))
-	c.Append(string("random string"))
-	c.Append(string("random string"))
-	if c.Len() != 3 {
-		t.Fatalf("Wrong length. (actual) %d != %d (expected)", c.Len(), 3)
-	}
-}
-
-func TestStringColAt(t *testing.T) {
-	c := new(StringCol)
-
-	expected := *new(string)
-
-	c.Append(expected)
-	value, exists := c.At(0)
-	if !exists {
-		t.Fatal("Value at index 0 should exist")
-	}
-	if value != expected {
-		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
-	}
-	if value, exists = c.At(1); exists {
-		t.Fatal("Value at index 1 should not exist")
+	cnt := 0
+	for value, expected := range goodStringConversions {
+		err = c.Append(value)
+		cnt = cnt + 1
+		assert.Nil(t, err)                  // Test successful conversion
+		assert.Equal(t, expected, c.Last()) // Test last value equality
+		assert.Equal(t, cnt, c.Len())       // Test Len()
+		at, ok = c.At(uint(cnt - 1))        // Get last value with At() method and check again
+		assert.True(t, ok)
+		assert.Equal(t, expected, at)
 	}
 }
 
-func TestStringColString(t *testing.T) {
+func TestShouldGetGoStringFromStringCol(t *testing.T) {
 	c := new(StringCol)
 	val := string("random string")
 	c.Append(val)
@@ -55,4 +45,11 @@ func TestStringColString(t *testing.T) {
 	if value != expected {
 		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
+}
+
+func TestShouldReturnNilFalseIfIndexDoesNotExistInStringCol(t *testing.T) {
+	c := new(StringCol)
+	v, ok := c.At(10)
+	assert.Nil(t, v)
+	assert.False(t, ok)
 }

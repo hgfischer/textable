@@ -9,18 +9,39 @@ import (
 )
 
 var goodFloatConversions = map[interface{}]float64{
-	float32(32.0):      float64(32.0),
-	float64(6464.6464): float64(6464.6464),
-	int(-123):          float64(-123),
-	int8(-88):          float64(-88),
-	int16(-1616):       float64(-1616),
-	int32(-323232):     float64(-323232),
-	int64(-64646464):   float64(-64646464),
-	uint(123):          float64(123),
-	uint8(88):          float64(88),
-	uint16(1616):       float64(1616),
-	uint32(323232):     float64(323232),
-	uint64(64646464):   float64(64646464),
+	float32(32.0):         32.0,
+	float64(6464.6464):    6464.6464,
+	int(-123):             -123,
+	int8(-88):             -88,
+	int16(-1616):          -1616,
+	int32(-323232):        -323232,
+	int64(-64646464):      -64646464,
+	uint(123):             123,
+	uint8(88):             88,
+	uint16(1616):          1616,
+	uint32(323232):        323232,
+	uint64(64646464):      64646464,
+	"31.1":                31.1,
+	"-32.3":               -32.3,
+	"31e1":                31e1,
+	"-32E3":               -32e3,
+	" 31.1    ":           31.1,
+	" -32.3   ":           -32.3,
+	" 31e1    ":           31e1,
+	" -32E3   ":           -32e3,
+	" trash 31.1 trash  ": 31.1,
+	" trash (-32.3)trash": -32.3,
+	" trash 31e1trash   ": 31e1,
+	" trash (-32E3)trash": -32e3,
+	"31.1, 151 1":         31.1,
+	"-32.3) 6234":         -32.3,
+	"31e1, 1  34":         31e1,
+	"-32E3) 6234":         -32e3,
+	"31 351.2 42":         31,
+	"-32 354 433":         -32,
+	"0x10 0x20 3":         0,
+	"071235 4222":         71235,
+	"-071235 323":         -71235,
 }
 
 var badFloatConversions = []interface{}{
@@ -37,16 +58,6 @@ func TestShouldAppendGoodConversionsToFloatCol(t *testing.T) {
 	cnt := 0
 	for value, expected := range goodFloatConversions {
 		err = c.Append(value)
-		cnt = cnt + 1
-		assert.Nil(t, err)                  // Test successful conversion
-		assert.Equal(t, expected, c.Last()) // Test last value equality
-		assert.Equal(t, cnt, c.Len())       // Test Len()
-		at, ok = c.At(uint(cnt - 1))        // Get last value with At() method and check again
-		assert.True(t, ok)
-		assert.Equal(t, expected, at)
-
-		// Reuse loop to test string conversion
-		err = c.Append(fmt.Sprint(value))
 		cnt = cnt + 1
 		assert.Nil(t, err)                  // Test successful conversion
 		assert.Equal(t, expected, c.Last()) // Test last value equality
@@ -79,4 +90,11 @@ func TestShouldGetGoStringFromFloatCol(t *testing.T) {
 	if value != expected {
 		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
+}
+
+func TestShouldReturnNilFalseIfIndexDoesNotExistInFloatCol(t *testing.T) {
+	c := new(FloatCol)
+	v, ok := c.At(10)
+	assert.Nil(t, v)
+	assert.False(t, ok)
 }

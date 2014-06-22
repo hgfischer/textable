@@ -118,3 +118,10 @@ func TestShouldGetGoStringFromUIntCol(t *testing.T) {
 		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
 	}
 }
+
+func TestShouldReturnNilFalseIfIndexDoesNotExistInUIntCol(t *testing.T) {
+	c := new(UIntCol)
+	v, ok := c.At(10)
+	assert.Nil(t, v)
+	assert.False(t, ok)
+}
