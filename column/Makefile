@@ -3,11 +3,15 @@
 
 default: all
 
-all: clean
-	go run generator/main.go
-	goimports -w gen_*.go
-	go test -v
-	go install
+clean:
+	rm coverage.out
 
-clean: 
-	rm -f gen_*.go
+cover:
+	go test -v -coverprofile=coverage.out
+	go tool cover -html=coverage.out
+
+test:
+	go test -v
+
+all: test
+	go install

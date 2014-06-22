@@ -1,5 +1,3 @@
-// Test case for Int32Col
-// This file was generated. See generator directory.
 package column
 
 import (
@@ -7,32 +5,33 @@ import (
 	"testing"
 )
 
-func TestInt32ColAppend(t *testing.T) {
-	c := new(Int32Col)
-	if err := c.Append(*new(int32)); err != nil {
-		t.Fatal(err)
-	}
-	if err := c.Append(*new(int16)); err == nil {
-		t.Fatal("Was expecting an error")
-	}
+func TestStringColAppend(t *testing.T) {
+	c := new(StringCol)
+	c.Append(string("random string"))
+	c.Append(float64(7.8))
+	c.Append(int(-622))
+	c.Append(uint(0xbeec38))
+
 }
 
-func TestInt32ColLen(t *testing.T) {
-	c := new(Int32Col)
+func TestStringColLen(t *testing.T) {
+	c := new(StringCol)
 	if c.Len() != 0 {
 		t.Fatalf("Wrong length. (actual) %d != %d (expected)", c.Len(), 0)
 	}
-	c.Append(*new(int32))
-	c.Append(*new(int32))
-	c.Append(*new(int32))
+	c.Append(string("random string"))
+	c.Append(string("random string"))
+	c.Append(string("random string"))
 	if c.Len() != 3 {
 		t.Fatalf("Wrong length. (actual) %d != %d (expected)", c.Len(), 3)
 	}
 }
 
-func TestInt32ColAt(t *testing.T) {
-	c := new(Int32Col)
-	expected := *new(int32)
+func TestStringColAt(t *testing.T) {
+	c := new(StringCol)
+
+	expected := *new(string)
+
 	c.Append(expected)
 	value, exists := c.At(0)
 	if !exists {
@@ -46,12 +45,12 @@ func TestInt32ColAt(t *testing.T) {
 	}
 }
 
-func TestInt32ColString(t *testing.T) {
-	c := new(Int32Col)
-	val := *new(int32)
+func TestStringColString(t *testing.T) {
+	c := new(StringCol)
+	val := string("random string")
 	c.Append(val)
 	c.Append(val)
-	expected := fmt.Sprintf("[]int32{%#v, %#v}", val, val)
+	expected := fmt.Sprintf("[]string{%#v, %#v}", val, val)
 	value := c.String()
 	if value != expected {
 		t.Fatalf("Wrong value. (actual) %#v != %#v (expected)", value, expected)
