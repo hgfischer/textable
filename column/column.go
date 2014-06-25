@@ -21,4 +21,5 @@ func NewForTypeOf(value interface{}) Column {
 	default:
 		return new(StringCol)
 	}
+	return nil
 }
