@@ -2,21 +2,42 @@ package textable
 
 import (
 	"testing"
+
+	"github.com/hgfischer/textable/column"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestTableSetup(t *testing.T) {
-	tt := New("City name", "Area", "Population", "Annual Rainfall")
-	tt.Align[0] = ALIGN_LEFT
-	tt.Align[3] = ALIGN_DECIMAL
-	tt.AddRow("Adelaide", 1295, 1158259, 600.5)
-	tt.AddRow("Brisbane", 5905, 1857594, 1146.4)
-	tt.AddRow("Darwin", 112, 120900, 1714.7)
-	tt.AddRow("Hobart", 1357, 205556, 619.5)
-	tt.AddRow("Sydney", 2058, 4336374, 1214.8)
-	tt.AddRow("Melbourne", 1566, 3806092, 646.9)
-	tt.AddRow("Perth", 5386, 1554769, 869.4)
-	for _, c := range tt.Columns {
-		t.Log(c.String())
+var (
+	TEST_HEADERS = []string{"Country", "Population", "Educ. Exp. (% GDP)", "HDI", "HDI change (*1000)"}
+	TEST_DATA    = [][]interface{}{
+		{"Algeria", uint(38700000), 4.3, 0.713, 3},
+		{"Argentina", uint(42669500), 6.5, 0.811, 6},
+		{"Australia", uint(23536500), 4.5, 0.938, 3},
+		{"Brazil", uint(202756000), 5.1, 0.730, 4},
+		{"Canada", uint(35427524), 5.5, 0.911, 2},
+		{"China", uint(1365220000), 4.3, 0.699, 10},
+		{"Greece", uint(10816286), 4.0, 0.860, -6},
+		{"India", uint(1245830000), 3.1, 0.554, 7},
+		{"Kazakhstan", uint(17244000), 2.8, 0.754, 10},
+		{"Portugal", uint(10477800), 5.2, 0.816, -1},
+		{"Russia", uint(146000000), 3.9, 0.788, 6},
+		{"United States", uint(318275000), 5.5, 0.937, 3},
 	}
-	// TODO add some assertions here, or refactor this test
+)
+
+func TestNewTableShouldStoreHeadersAndInitializeColumns(t *testing.T) {
+	table := New(TEST_HEADERS...)
+	assert.Equal(t, len(TEST_HEADERS), len(table.Headers))
+	assert.Equal(t, len(TEST_HEADERS), len(table.Columns))
+}
+
+func TestAddRowShouldSetProperTypeForEachColumnAndAppendValues(t *testing.T) {
+	tt := New(TEST_HEADERS...)
+	for nrow, data := range TEST_DATA {
+		tt.AddRow(data...)
+		for ncol, col := range data {
+			assert.IsType(t, column.NewForTypeOf(col), tt.Columns[ncol])
+			assert.Equal(t, nrow+1, tt.Columns[ncol].Len())
+		}
+	}
 }
