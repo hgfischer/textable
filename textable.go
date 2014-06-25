@@ -3,22 +3,22 @@ package textable
 import "github.com/hgfischer/textable/column"
 
 type TexTable struct {
-	Header  []string
+	Headers []string
 	Align   []Align
 	Columns []column.Column
 }
 
-func New(header ...string) *TexTable {
+func New(headers ...string) *TexTable {
 	return &TexTable{
-		Header:  header,
-		Align:   make([]Align, len(header)),
-		Columns: make([]column.Column, len(header)),
+		Headers: headers,
+		Align:   make([]Align, len(headers)),
+		Columns: make([]column.Column, len(headers)),
 	}
 }
 
 func (tt *TexTable) AddRow(columns ...interface{}) error {
-	if len(columns) != len(tt.Header) {
-		return getError(_ERR_INCOR_NUM_VALS, len(columns), len(tt.Header))
+	if len(columns) != len(tt.Headers) {
+		return getError(_ERR_INCOR_NUM_VALS, len(columns), len(tt.Headers))
 	}
 
 	for k, v := range columns {
