@@ -6,11 +6,14 @@ default: all
 clean:
 	rm coverage.out
 
-cover:
+deps:
+	go get github.com/stretchr/testify
+
+cover: deps
 	go test -v -coverprofile=coverage.out
 	go tool cover -html=coverage.out
 
-test:
+test: deps
 	go test -v
 
 all: test
