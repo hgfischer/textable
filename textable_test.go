@@ -34,10 +34,32 @@ func TestNewTableShouldStoreHeadersAndInitializeColumns(t *testing.T) {
 func TestAddRowShouldSetProperTypeForEachColumnAndAppendValues(t *testing.T) {
 	tt := New(TEST_HEADERS...)
 	for nrow, data := range TEST_DATA {
-		tt.AddRow(data...)
+		err := tt.AddRow(data...)
+		assert.Nil(t, err)
 		for ncol, col := range data {
 			assert.IsType(t, column.NewForTypeOf(col), tt.Columns[ncol])
 			assert.Equal(t, nrow+1, tt.Columns[ncol].Len())
 		}
 	}
+}
+
+func TestAddRowWithWrongNumberOfColumnsShouldReturnError(t *testing.T) {
+	tt := New(TEST_HEADERS...)
+	err := tt.AddRow()
+	assert.NotNil(t, err)
+}
+
+func TestAddRowWithWrongTypeOfColumnShouldReturnError(t *testing.T) {
+	tt := New(TEST_HEADERS...)
+	err := tt.AddRow(TEST_DATA[0]...)
+	assert.Nil(t, err)
+	wrongData := []interface{}{
+		1,   // StringCol accepts everything
+		1.2, // UIntCol also accepts floats, dropping the decimal part
+		10,  // FloatCol also accepts integers
+		1,   // Same as above
+		"-", // This should fail, since this string does not have a number inside
+	}
+	err = tt.AddRow(wrongData...)
+	assert.NotNil(t, err)
 }
