@@ -2,11 +2,16 @@ package column
 
 import (
 	"fmt"
+
 	"github.com/hgfischer/textable/strng"
 )
 
 type FloatCol struct {
-	rows []float64
+	rows           []float64
+	formattedRows  []string
+	formattedDirty bool
+	format         string
+	width          uint
 }
 
 func (c *FloatCol) Len() uint {
@@ -46,6 +51,7 @@ func (c *FloatCol) Append(row interface{}) error {
 		}
 		c.rows = append(c.rows, num)
 	}
+	formattedDirty = true
 	return nil
 }
 
@@ -65,4 +71,34 @@ func (c *FloatCol) Last() (value interface{}) {
 		value, _ = c.At(pos - 1)
 	}
 	return
+}
+
+func (c *FloatCol) SetFormat(format string) error {
+	c.format = format
+	// TODO check if format is compatible with type
+	return nil
+}
+
+func (c *FloatCol) renderFormattedRows() {
+	if len(c.formattedRows) != len(c.rows) {
+		c.formattedRows = make([]string, len(c.rows))
+	}
+	for k, r := range c.rows {
+		c.formattedRows[k] = fmt.Sprintf(c.format, r)
+	}
+}
+
+func (c *FloatCol) Width() uint {
+	if c.formattedDirty {
+		c.renderFormattedRows()
+		c.formattedDirty = false
+	}
+	var max int
+	for k, r := range c.formattedRows {
+		curr := len(r)
+		if curr > max {
+			max = curr
+		}
+	}
+	return uint(max)
 }

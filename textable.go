@@ -1,18 +1,16 @@
 package textable
 
-import "github.com/hgfischer/textable/column"
-
 type TexTable struct {
 	Headers []string
 	Align   []Align
-	Columns []column.Column
+	Columns []*column
 }
 
 func New(headers ...string) *TexTable {
 	return &TexTable{
 		Headers: headers,
 		Align:   make([]Align, len(headers)),
-		Columns: make([]column.Column, len(headers)),
+		Columns: make([]*column, len(headers)),
 	}
 }
 
@@ -23,11 +21,9 @@ func (tt *TexTable) AddRow(columns ...interface{}) error {
 
 	for k, v := range columns {
 		if tt.Columns[k] == nil {
-			tt.Columns[k] = column.NewForTypeOf(v)
+			tt.Columns[k] = new(column)
 		}
-		if err := tt.Columns[k].Append(v); err != nil {
-			return err
-		}
+		tt.Columns[k].Append(v)
 	}
 
 	return nil

@@ -3,7 +3,6 @@ package textable
 import (
 	"testing"
 
-	"github.com/hgfischer/textable/column"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,8 +35,7 @@ func TestAddRowShouldSetProperTypeForEachColumnAndAppendValues(t *testing.T) {
 	for nrow, data := range TEST_DATA {
 		err := tt.AddRow(data...)
 		assert.Nil(t, err)
-		for ncol, col := range data {
-			assert.IsType(t, column.NewForTypeOf(col), tt.Columns[ncol])
+		for ncol, _ := range data {
 			assert.Equal(t, nrow+1, tt.Columns[ncol].Len())
 		}
 	}
