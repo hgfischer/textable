@@ -9,7 +9,7 @@ import (
 var (
 	TEST_HEADERS = []string{"Country", "Population", "Educ. Exp. (% GDP)", "HDI", "HDI change (*1000)"}
 	TEST_DATA    = [][]interface{}{
-		{"Algeria", uint(38700000), 4.3, 0.713, 3},
+		{"Algeria", uint(38700000), 4.3, 0.713, nil},
 		{"Argentina", uint(42669500), 6.5, 0.811, 6},
 		{"Australia", uint(23536500), 4.5, 0.938, 3},
 		{"Brazil", uint(202756000), 5.1, 0.730, 4},

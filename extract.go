@@ -1,4 +1,4 @@
-package strng
+package textable
 
 import (
 	"errors"
