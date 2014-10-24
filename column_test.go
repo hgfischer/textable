@@ -31,3 +31,13 @@ func TestColumnValueAndOrderSwap(t *testing.T) {
 	assert.Equal(t, 2, c.order[0])
 	assert.Equal(t, 1, c.order[1])
 }
+
+func TestColumnValueFormat(t *testing.T) {
+	c := new(column)
+	c.Append(1.2)
+	c.Append("1.3")
+	c.Append(nil)
+	c.Append("string")
+	c.SetFormat("%s")
+	assert.Equal(t, len("string"), c.Width())
+}

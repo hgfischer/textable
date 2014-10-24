@@ -8,10 +8,24 @@ import (
 )
 
 var (
-	fltRgx  = regexp.MustCompile(`([+-]?\d+(?:[\.eE]\d+)?)`)
-	intRgx  = regexp.MustCompile(`([+-]?(?:(?:0[xX][0-9A-Fa-f]+)|(?:0[0-7]+)|(?:\d+)))`)
-	uintRgx = regexp.MustCompile(`((?:0[xX][0-9A-Fa-f]+)|(?:0[0-7]+)|(?:\d+))`)
+	fltRgxStr   = `([+-]?\d+(?:[\.eE]\d+)?)`
+	fltRgx      = regexp.MustCompile(fltRgxStr)
+	intRgxStr   = `([+-]?(?:(?:0[xX][0-9A-Fa-f]+)|(?:0[0-7]+)|(?:\d+)))`
+	intRgx      = regexp.MustCompile(intRgxStr)
+	uintRgxStr  = `((?:0[xX][0-9A-Fa-f]+)|(?:0[0-7]+)|(?:\d+))`
+	uintRgx     = regexp.MustCompile(uintRgxStr)
+	isNumRgxStr = `^(` + fltRgxStr + `|` + intRgxStr + `|` + uintRgxStr + `)$`
+	isNumRgx    = regexp.MustCompile(isNumRgxStr)
 )
+
+// Return true if the string is only of numeric nature
+func IsNumeric(str string) bool {
+	str = strings.TrimSpace(str)
+	if str == "" {
+		return false
+	}
+	return isNumRgx.MatchString(str)
+}
 
 func ExtractInt(str string) (intg int64, err error) {
 	str = strings.TrimSpace(str)

@@ -1,8 +1,13 @@
 package textable
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 type column struct {
+	kind          interface{}
+	align         Align
 	order         []int
 	values        []interface{}
 	valuesChanged bool
@@ -22,14 +27,17 @@ func (c *column) Len() int {
 	return len(c.values)
 }
 
-func (c *column) Swap(i, j int) {
-	c.values[i], c.values[j] = c.values[j], c.values[i]
-	c.order[i], c.order[j] = c.order[j], c.order[i]
+func (c *column) Swap(a, b int) {
+	c.values[a], c.values[b] = c.values[b], c.values[a]
+	c.order[a], c.order[b] = c.order[b], c.order[a]
 }
 
-func (c *column) Less(i, j int) bool {
-	// TODO properly detect type and make comparisons
-	return c.values[i].(int) < c.values[j].(int)
+func (c *column) Less(a, b int) bool {
+	valA := reflect.ValueOf(c.values[a])
+
+	valB := reflect.ValueOf(c.values[a])
+
+	return c.values[a].(int) < c.values[b].(int)
 }
 
 func (c *column) SetFormat(format string) error {
@@ -46,6 +54,7 @@ func (c *column) renderFormattedRows() {
 	for k, r := range c.values {
 		c.fmtdValues[k] = fmt.Sprintf(c.format, r)
 	}
+	fmt.Println(c.fmtdValues)
 }
 
 func (c *column) Width() uint {

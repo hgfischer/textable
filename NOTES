@@ -1,0 +1,6 @@
+* Perguntar ao usuario qual o tipo predominante da coluna?
+* Detectar o tipo predominante (CSV, HTML)?
+* Tipos possíveis
+	* string
+	* numericos
+	* data/hora
